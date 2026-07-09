@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Волновой синтезатор</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #0b0b1a;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        /* Подсказка внизу */
+        .hint {
+            position: fixed;
+            bottom: 30px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: rgba(255,255,255,0.3);
+            font-size: 14px;
+            letter-spacing: 2px;
+            pointer-events: none;
+            user-select: none;
+            transition: opacity 0.5s;
+        }
+        .hint span {
+            display: inline-block;
+            background: rgba(255,255,255,0.05);
+            padding: 6px 18px;
+            border-radius: 30px;
+            backdrop-filter: blur(4px);
+        }
+        /* Счетчик FPS (для красоты) */
+        #fps {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            color: rgba(255,255,255,0.2);
+            font-size: 12px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hint"><span>двигай мышью · кликни для смены цвета</span></div>
+    <div id="fps"></div>
+
+    <canvas id="waveCanvas"></canvas>
+
+    <script>
+        (function() {
+            const canvas = document.getElementById('waveCanvas');
+            const ctx = canvas.getContext('2d');
+            let W, H;
+
+            // Параметры волн
+            const waves = [];
+            const NUM_WAVES = 6;
+            const BASE_AMPLITUDE = 40;
+            const BASE_SPEED = 0.008;
+
+            // Цветовые палитры
+            const palettes = [
+                { bg: '#0b0b1a', colors: ['#ff6b6b', '#feca57', '#48dbfb', '#1dd1a1', '#5f27cd'] },
+                { bg: '#1a0b0b', colors: ['#ff9ff3', '#f368e0', '#ff6b6b', '#ee5a24', '#feca57'] },
+                { bg: '#0b1a0b', colors: ['#7bed9f', '#70a1ff', '#ffa502', '#eccc68', '#2ed573'] },
+                { bg: '#0b0b2a', colors: ['#a29bfe', '#6c5ce7', '#fd79a8', '#00cec9', '#fdcb6e'] },
+            ];
+            let currentPalette = 0;
+
+            // Состояние мыши
+            let mouseX = 0.5, mouseY = 0.5; // в долях от ширины/высоты
+            let targetMouseX = 0.5, targetMouseY = 0.5;
+
+            // Инициализация волн
+            function initWaves() {
+                waves.length = 0;
+                for (let i = 0; i < NUM_WAVES; i++) {
+                    waves.push({
+                        phase: Math.random() * Math.PI * 2,
+                        amplitude: BASE_AMPLITUDE * (0.6 + Math.random() * 0.8),
+                        speed: BASE_SPEED * (0.5 + Math.random() * 0.8),
+                        frequency: 0.02 + Math.random() * 0.03,
+                        offsetY: (i / (NUM_WAVES - 1)) * H * 0.8 + H * 0.1,
+                        width: 1.0 + Math.random() * 0.5, // толщина линии
+                        alpha: 0.5 + Math.random() * 0.3,
+                    });
+                }
+            }
+
+            function resize() {
+                W = canvas.width = window.innerWidth;
+                H = canvas.height = window.innerHeight;
+                // Пересчитываем вертикальные смещения волн
+                for (let i = 0; i < waves.length; i++) {
+                    waves[i].offsetY = (i / (waves.length - 1)) * H * 0.8 + H * 0.1;
+                }
+            }
+
+            // Смена палитры
+            function nextPalette() {
+                currentPalette = (currentPalette + 1) % palettes.length;
+                document.body.style.backgroundColor = palettes[currentPalette].bg;
+            }
+
+            // Обработчики мыши
+            function onMouseMove(e) {
+                const rect = canvas.getBoundingClientRect();
+                targetMouseX = (e.clientX - rect.left) / rect.width;
+                targetMouseY = (e.clientY - rect.top) / rect.height;
+            }
+
+            function onTouchMove(e) {
+                if (e.touches.length) {
+                    const rect = canvas.getBoundingClientRect();
+                    targetMouseX = (e.touches[0].clientX - rect.left) / rect.width;
+                    targetMouseY = (e.touches[0].clientY - rect.top) / rect.height;
+                }
+            }
+
+            function onClick() {
+                nextPalette();
+            }
+
+            // Анимация
+            let lastTimestamp = 0;
+            let frameCount = 0;
+            let fps = 0;
+            let fpsTime = 0;
+
+            function draw(timestamp) {
+                // FPS
+                frameCount++;
+                if (timestamp - fpsTime > 1000) {
+                    fps = frameCount;
+                    frameCount = 0;
+                    fpsTime = timestamp;
+                    document.getElementById('fps').textContent = fps + ' FPS';
+                }
+
+                // Плавное следование мыши
+                mouseX += (targetMouseX - mouseX) * 0.05;
+                mouseY += (targetMouseY - mouseY) * 0.05;
+
+                // Очистка с прозрачностью для эффекта хвоста (или полная очистка)
+                ctx.clearRect(0, 0, W, H);
+                // Можно добавить легкий хвост раскомментировав следующую строку:
+                // ctx.fillStyle = 'rgba(11,11,26,0.1)'; ctx.fillRect(0,0,W,H);
+
+                const pal = palettes[currentPalette];
+                const colors = pal.colors;
+
+                // Рисуем каждую волну
+                for (let i = 0; i < waves.length; i++) {
+                    const w = waves[i];
+                    // Изменяем фазу
+                    w.phase += w.speed;
+
+                    // Влияние мыши на амплитуду
+                    const ampMod = 1 + 0.6 * (mouseY - 0.5) * 2; // от 0.4 до 1.6
+                    const amp = w.amplitude * ampMod;
+
+                    // Цвет волны (индекс цвета из палитры)
+                    const colorIndex = i % colors.length;
+                    ctx.beginPath();
+                    ctx.lineWidth = w.width * 1.5;
+                    ctx.strokeStyle = colors[colorIndex];
+                    ctx.globalAlpha = w.alpha * (0.8 + 0.2 * mouseX);
+
+                    // Рисуем волну
+                    const step = 2;
+                    for (let x = 0; x <= W; x += step) {
+                        // Основная синусоида
+                        let y = w.offsetY + amp * Math.sin(w.frequency * x + w.phase);
+                        // Влияние мыши по горизонтали (изгиб к курсору)
+                        const dx = (x / W) - mouseX;
+                        const influence = 20 * Math.exp(-dx * dx * 20) * (mouseY - 0.5) * 2;
+                        y += influence;
+
+                        if (x === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                }
+
+                // Рисуем дополнительные блики (точки на гребнях) - опционально, для красоты
+                // можно добавить, но для простоты опустим
+
+                requestAnimationFrame(draw);
+            }
+
+            // Инициализация
+            function init() {
+                resize();
+                initWaves();
+                // Устанавливаем начальную палитру
+                document.body.style.backgroundColor = palettes[0].bg;
+
+                // События
+                window.addEventListener('resize', () => {
+                    resize();
+                    // Переинициализируем волны при ресайзе, чтобы пересчитать offsetY
+                    initWaves();
+                });
+                canvas.addEventListener('mousemove', onMouseMove);
+                canvas.addEventListener('touchmove', onTouchMove, { passive: true });
+                canvas.addEventListener('click', onClick);
+                // Также реагируем на касание (для мобильных)
+                canvas.addEventListener('touchstart', (e) => {
+                    if (e.touches.length) {
+                        const rect = canvas.getBoundingClientRect();
+                        targetMouseX = (e.touches[0].clientX - rect.left) / rect.width;
+                        targetMouseY = (e.touches[0].clientY - rect.top) / rect.height;
+                    }
+                    onClick();
+                }, { passive: true });
+
+                // Запуск анимации
+                requestAnimationFrame(draw);
+            }
+
+            // Старт
+            init();
+        })();
+    </script>
+</body>
+</html>
