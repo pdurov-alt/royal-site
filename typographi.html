@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Гид по типографике</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: #faf8f5;
+            color: #1e1e2a;
+            line-height: 1.8;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        /* Header */
+        header {
+            background: #1e1e2a;
+            color: #faf8f5;
+            padding: 30px 0;
+            text-align: center;
+            border-bottom: 4px solid #d4a373;
+        }
+        header h1 {
+            font-size: 42px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            font-family: 'Helvetica Neue', sans-serif;
+            text-transform: uppercase;
+        }
+        header p {
+            font-size: 18px;
+            color: #c9c9d6;
+            margin-top: 8px;
+        }
+
+        /* Navigation (якоря) */
+        .nav {
+            background: #fff;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0dcd5;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(4px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .nav a {
+            margin: 0 18px;
+            text-decoration: none;
+            color: #1e1e2a;
+            font-weight: 600;
+            font-size: 15px;
+            font-family: 'Helvetica Neue', sans-serif;
+            transition: 0.3s;
+        }
+        .nav a:hover {
+            color: #d4a373;
+        }
+
+        /* Sections */
+        .section {
+            padding: 60px 0;
+            border-bottom: 1px solid #e0dcd5;
+        }
+        .section:last-of-type {
+            border-bottom: none;
+        }
+        h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-family: 'Helvetica Neue', sans-serif;
+            font-weight: 700;
+            color: #1e1e2a;
+            letter-spacing: -0.5px;
+        }
+        h2 span {
+            color: #d4a373;
+        }
+        h3 {
+            font-size: 22px;
+            margin: 30px 0 15px;
+            font-family: 'Helvetica Neue', sans-serif;
+            font-weight: 600;
+        }
+        p {
+            margin-bottom: 18px;
+            font-size: 17px;
+        }
+        .quote {
+            font-style: italic;
+            font-size: 22px;
+            color: #5a4e3e;
+            border-left: 4px solid #d4a373;
+            padding-left: 30px;
+            margin: 30px 0;
+            background: #f4f0ea;
+            padding: 20px 30px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        /* Примеры шрифтов */
+        .font-example {
+            background: #fff;
+            border: 1px solid #e0dcd5;
+            border-radius: 16px;
+            padding: 25px 30px;
+            margin: 20px 0;
+        }
+        .font-example .label {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8a7e6e;
+            font-weight: 600;
+            font-family: 'Helvetica Neue', sans-serif;
+            margin-bottom: 8px;
+        }
+        .font-example .sample {
+            font-size: 36px;
+            line-height: 1.3;
+        }
+        .serif { font-family: 'Georgia', serif; }
+        .sans { font-family: 'Helvetica Neue', Arial, sans-serif; }
+        .mono { font-family: 'Courier New', monospace; }
+        .display { font-family: 'Impact', fantasy; letter-spacing: 2px; }
+
+        /* Сетка для правил */
+        .rules-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        .rule-card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid #e0dcd5;
+        }
+        .rule-card h4 {
+            font-family: 'Helvetica Neue', sans-serif;
+            font-weight: 700;
+            color: #d4a373;
+            margin-bottom: 8px;
+        }
+        .rule-card p {
+            font-size: 15px;
+            margin-bottom: 0;
+        }
+
+        /* Примеры пар шрифтов */
+        .pair {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            background: #f4f0ea;
+            border-radius: 16px;
+            padding: 20px 25px;
+            margin: 15px 0;
+        }
+        .pair .head {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .pair .body {
+            font-size: 18px;
+        }
+
+        /* Footer */
+        footer {
+            background: #1e1e2a;
+            color: #9a9aa8;
+            padding: 30px 0;
+            text-align: center;
+            font-size: 14px;
+            font-family: 'Helvetica Neue', sans-serif;
+            border-top: 4px solid #d4a373;
+        }
+        footer a {
+            color: #d4a373;
+            text-decoration: none;
+        }
+
+        /* Адаптив */
+        @media (max-width: 768px) {
+            header h1 { font-size: 30px; }
+            .nav a { margin: 0 10px; font-size: 13px; }
+            .rules-grid { grid-template-columns: 1fr; }
+            .font-example .sample { font-size: 28px; }
+            .pair { flex-direction: column; }
+        }
+        @media (max-width: 480px) {
+            .container { padding: 0 15px; }
+            .section { padding: 40px 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <h1>Гид по типографике</h1>
+            <p>Искусство управлять вниманием через шрифты</p>
+        </div>
+    </header>
+
+    <nav class="nav">
+        <div class="container" style="text-align:center;">
+            <a href="#history">История</a>
+            <a href="#classification">Классификация</a>
+            <a href="#rules">Правила</a>
+            <a href="#examples">Примеры</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+
+            <!-- Герой с цитатой -->
+            <section class="section" style="padding-top:40px;">
+                <div class="quote">
+                    «Типографика — это голос дизайна. Она говорит громче любых слов».
+                </div>
+                <p style="font-size:18px; color:#5a4e3e;">
+                    В этом гиде мы разберём основные понятия, историю, классификацию шрифтов и научимся сочетать их для создания гармоничных макетов.
+                </p>
+            </section>
+
+            <!-- История -->
+            <section id="history" class="section">
+                <h2>📜 История <span>типографики</span></h2>
+                <p>
+                    Типографика берёт начало с изобретения книгопечатания Иоганном Гутенбергом в XV веке. Первые шрифты имитировали рукописные тексты, но со временем развились в самостоятельную дисциплину.
+                </p>
+                <p>
+                    В XIX веке появились гротески (шрифты без засечек), которые стали символом индустриальной эпохи. XX век принёс модульные шрифты и экспериментальные гарнитуры. Сегодня типографика — это не только красота, но и инструмент UX-дизайна.
+                </p>
+                <p>
+                    Важно понимать, что каждый шрифт несёт эмоциональный заряд: серьёзные засечки — для классики, чистые гротески — для современности, рукописные — для тепла и уюта.
+                </p>
+            </section>
+
+            <!-- Классификация -->
+            <section id="classification" class="section">
+                <h2>🏷️ Классификация <span>шрифтов</span></h2>
+                <h3>С засечками (Serif)</h3>
+                <div class="font-example">
+                    <div class="label">Пример — Georgia</div>
+                    <div class="sample serif">Алфавит: Аа Бб Вв Гг Дд</div>
+                    <div style="font-size:16px; color:#5a4e3e; margin-top:5px;">Используется в печатных изданиях, книгах, элегантных брендах.</div>
+                </div>
+
+                <h3>Без засечек (Sans-serif)</h3>
+                <div class="font-example">
+                    <div class="label">Пример — Helvetica</div>
+                    <div class="sample sans">Алфавит: Аа Бб Вв Гг Дд</div>
+                    <div style="font-size:16px; color:#5a4e3e; margin-top:5px;">Современный, нейтральный, для интерфейсов и плакатов.</div>
+                </div>
+
+                <h3>Моноширинные (Monospace)</h3>
+                <div class="font-example">
+                    <div class="label">Пример — Courier New</div>
+                    <div class="sample mono">Алфавит: Аа Бб Вв Гг Дд</div>
+                    <div style="font-size:16px; color:#5a4e3e; margin-top:5px;">Для кода, таблиц, технической документации.</div>
+                </div>
+
+                <h3>Акцидентные (Display)</h3>
+                <div class="font-example">
+                    <div class="label">Пример — Impact</div>
+                    <div class="sample display">Алфавит: Аа Бб Вв Гг Дд</div>
+                    <div style="font-size:16px; color:#5a4e3e; margin-top:5px;">Для заголовков, акцентов, рекламы.</div>
+                </div>
+            </section>
+
+            <!-- Правила сочетания -->
+            <section id="rules" class="section">
+                <h2>⚖️ Правила <span>сочетания</span></h2>
+                <div class="rules-grid">
+                    <div class="rule-card">
+                        <h4>Контраст</h4>
+                        <p>Сочетайте шрифты с разными начертаниями (например, засечный + гротеск) для создания визуального интереса.</p>
+                    </div>
+                    <div class="rule-card">
+                        <h4>Иерархия</h4>
+                        <p>Используйте разные размеры и веса для заголовков, подзаголовков и основного текста.</p>
+                    </div>
+                    <div class="rule-card">
+                        <h4>Ограничение</h4>
+                        <p>Не используйте более 2–3 шрифтов в одном макете — иначе будет хаос.</p>
+                    </div>
+                    <div class="rule-card">
+                        <h4>Настроение</h4>
+                        <p>Учитывайте характер шрифта: строгий или игривый, классический или футуристический.</p>
+                    </div>
+                </div>
+                <p style="margin-top:20px; font-size:16px; color:#5a4e3e; background:#f4f0ea; padding:15px 20px; border-radius:12px;">
+                    <strong>Золотое правило:</strong> выберите один основной шрифт для текста и один акцентный для заголовков. Проверяйте читаемость на разных устройствах.
+                </p>
+            </section>
+
+            <!-- Примеры пар -->
+            <section id="examples" class="section">
+                <h2>🖌️ Удачные <span>пары</span></h2>
+                <div class="pair">
+                    <div class="head serif" style="font-size:32px;">Playfair Display</div>
+                    <div class="body sans" style="font-size:20px;">Source Sans Pro</div>
+                    <div style="width:100%; font-size:16px; color:#5a4e3e;">Классический заголовок + современный текст — для журналов и блогов.</div>
+                </div>
+                <div class="pair">
+                    <div class="head sans" style="font-size:32px;">Montserrat</div>
+                    <div class="body serif" style="font-size:20px;">Merriweather</div>
+                    <div style="width:100%; font-size:16px; color:#5a4e3e;">Строгий заголовок + читаемый текст — для сайтов и презентаций.</div>
+                </div>
+                <div class="pair">
+                    <div class="head display" style="font-size:32px;">Oswald</div>
+                    <div class="body sans" style="font-size:20px;">Roboto</div>
+                    <div style="width:100%; font-size:16px; color:#5a4e3e;">Динамичный акцент + нейтральный текст — для спортивных брендов.</div>
+                </div>
+                <p style="margin-top:25px;">
+                    Экспериментируйте, тестируйте на реальных текстах и доверяйте своему вкусу. Главное — чтобы шрифты работали на содержание.
+                </p>
+            </section>
+
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2026 Гид по типографике — создано с любовью к буквам.</p>
+            <p style="margin-top:6px; font-size:13px; color:#7a7a8a;">
+                Все примеры шрифтов приведены для ознакомления.
+            </p>
+        </div>
+    </footer>
+
+</body>
+  </html>
